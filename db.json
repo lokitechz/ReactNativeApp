@@ -1,0 +1,15 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "userName": "giangdh20",
+            "password": "12345",
+            "firtName": "Giang",
+            "lastName": "Dương",
+            "email": "giangdh20@fpt.edu.vn",
+            "gender": "Male",
+            "createDate": "17/09/2023",
+            "updateDate": "17/09/2023"
+        }
+    ]
+}
