@@ -5,14 +5,18 @@ import CustomButton from '../components/CustomButton';
 import log from '../log';
 
 const SignInScreen = (props) => {
-    let users = [];
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    // Tạo biến users để lưu trữ danh sách user của hệ thống
+    let users = [];
 
-    // Function to fetch data from the API
+    // Function lấy dữ liệu từ API sử dụng fetch
     async function fetchData() {
         try {
-            const response = await fetch('http://localhost:3000/users');
+            // Khai báo đường dẫn API
+            const API_URL = 'http://localhost:3000/users';
+            const response = await fetch(API_URL);
+            // .json() chuyển đổi data trả về từ API sang json
             const data = await response.json();
             return data;
         } catch (error) {
@@ -21,33 +25,36 @@ const SignInScreen = (props) => {
         }
     }
 
-    // Call the fetchData function and store the result in a variable
+    // Function gọi fetchData sau đó lưu response từ API trả về vào biến users
     async function storeData() {
         users = await fetchData();
     }
 
     storeData();
 
+    // Funtion thực hiện đăng nhập
     const doLogin = () => {
-        // Kiểm tra dữ liệu gồm username và password
+        // Kiểm tra dữ liệu trên form gồm username và password
         if (username.length == 0) {
-            alert('Username is required');
+            Alert.alert('Username is required');
             return;
         }
 
         if (password.length == 0) {
-            alert('Password is required');
+            Alert.alert('Password is required');
             return;
         }
 
         // Tạo đối tượng lưu giữ thông tin login
         let request = { username: username, password: password };
 
+        // In ra thông tin user phục vụ check lỗi
         log.info('authInfo: ' + JSON.stringify(request));
 
+        // Kiêm tra danh sách users có null hoặc undefined không
         if (users) {
             const authInfo = users.find((user) => user.userName === request.username);
-
+            // Thực hiện validate dữ liệu trên form và hiển thị alert
             if (!authInfo) {
                 Alert.alert('Notification', 'Cant find user infomation', [{ text: 'Cancel', onPress: () => log.error('Cant find user ' + request.username) }]);
             } else {
