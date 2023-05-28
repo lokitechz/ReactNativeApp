@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Button, View, Text, StyleSheet, ScrollView } from 'react-native';
+import { SafeAreaView, Button, View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import log from '../Log';
 
 const HomeScreen = ({ navigation }) => {
@@ -16,10 +16,8 @@ const HomeScreen = ({ navigation }) => {
 
     async function getListStudent() {
         try {
-            // Khai báo đường dẫn API
             const API_URL = 'http://localhost:3000/students';
             const response = await fetch(API_URL);
-            // .json() chuyển đổi data trả về từ API sang json
             const data = await response.json();
             setStudents(data);
             return data;
@@ -40,7 +38,13 @@ const HomeScreen = ({ navigation }) => {
                     {students.map((item, index) => {
                         return (
                             <View style={styles.item} key={index}>
-                                <View style={styles.itemImage} />
+                                <View style={styles.itemImageContainer}>
+                                    {item.gender === 'Male' ? (
+                                        <Image style={styles.itemImage} source={require('../assets/images/male.png')} resizeMode='contain' />
+                                    ) : (
+                                        <Image style={styles.itemImage} source={require('../assets/images/female.png')} resizeMode='contain' />
+                                    )}
+                                </View>
                                 <View style={{ paddingLeft: 15 }}>
                                     <Text>{item.studentId}</Text>
                                     <Text>{item.fullName}</Text>
@@ -59,7 +63,7 @@ const HomeScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 1
     },
     txtHeader: {
         fontSize: 18,
@@ -71,11 +75,15 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.5,
         flexDirection: 'row'
     },
-    itemImage: {
+    itemImageContainer: {
         width: 100,
         height: 100,
-        borderRadius: 100,
-        backgroundColor: '#E6E6E6'
+        borderRadius: 100
+    },
+    itemImage: {
+        flex: 1,
+        width: undefined,
+        height: undefined
     }
 });
 
