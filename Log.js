@@ -1,6 +1,6 @@
 import { logger } from 'react-native-logs';
 
- const log = logger.createLogger({
+const log = logger.createLogger({
     levels: {
         custom: 0,
         debug: 1,

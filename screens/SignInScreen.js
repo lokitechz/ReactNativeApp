@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, Image, StyleSheet, View } from 'react-native';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
-import log from '../log';
+import log from '../Log';
 
 const SignInScreen = (props) => {
     const [username, setUsername] = useState('');
@@ -28,6 +28,7 @@ const SignInScreen = (props) => {
     // Function gọi fetchData sau đó lưu response từ API trả về vào biến users
     async function storeData() {
         users = await fetchData();
+        log.info('users: ' + JSON.stringify(users));
     }
 
     storeData();
@@ -85,8 +86,6 @@ const SignInScreen = (props) => {
     );
 };
 
-export default SignInScreen;
-
 const styles = StyleSheet.create({
     root: {
         alignItems: 'center',
@@ -98,3 +97,5 @@ const styles = StyleSheet.create({
         resizeMode: 'contain'
     }
 });
+
+export default SignInScreen;
