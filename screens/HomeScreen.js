@@ -1,59 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, Button, View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import log from '../Log';
+import Student from '../components/Student';
 
 const HomeScreen = ({ navigation }) => {
     const [students, setStudents] = useState([]);
-
-    useEffect(() => {
-        getListStudent();
-    }, []);
 
     // Hàm điều hướng
     const navigateToLogin = () => {
         navigation.navigate('Login');
     };
 
+    // Gọi function
     async function getListStudent() {
         try {
             const API_URL = 'http://localhost:3000/students';
             const response = await fetch(API_URL);
             const data = await response.json();
             setStudents(data);
-            return data;
+            log.info('====> students:', JSON.stringify(data));
         } catch (error) {
             log.error('Fetch data failed ' + error);
-            return null;
         }
     }
 
+    // Hooks là những hàm cho phép bạn “kết nối” React state và lifecycle vào các components sử dụng hàm.
+    // useState() là 1 react hook
+    // 6 trường hợp sử dụng của useEffect() trong React
+    // 1.Chạy một lần khi mount : tìm nạp data API.
+    // 2.Chạy khi thay đổi state : thường thì khi validate input đầu vào.
+    // 3.Chạy khi thay đổi state : filtering trực tiếp.
+    // 4.Chạy khi thay đổi state : trigger animation trên giá trị của array mới.
+    // 5.Chạy khi props thay đổi : update lại list đã fetched API khi data update.
+    // 6.Chạy khi props thay đổi : updateing data API để cập nhật BTC
+    useEffect(() => {
+        console.log('useEffect has been called!');
+        getListStudent();
+    }, []);
+
+    // Gọi vào hàm return với dữ liệu ban đầu là là danh sách sinh viên rỗng
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={{ flex: 1, padding: 20 }}>
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollView}>
                 <Button title='Go to Login Screen' onPress={navigateToLogin} />
                 <View>
                     <Text style={styles.txtHeader}>List Student</Text>
                 </View>
-                <View style={styles.container}>
+                <View style={styles.studentContainer}>
                     {students.map((item, index) => {
-                        return (
-                            <View style={styles.item} key={index}>
-                                <View style={styles.itemImageContainer}>
-                                    {item.gender === 'Male' ? (
-                                        <Image style={styles.itemImage} source={require('../assets/images/male.png')} resizeMode='contain' />
-                                    ) : (
-                                        <Image style={styles.itemImage} source={require('../assets/images/female.png')} resizeMode='contain' />
-                                    )}
-                                </View>
-                                <View style={{ paddingLeft: 15 }}>
-                                    <Text>{item.studentId}</Text>
-                                    <Text>{item.fullName}</Text>
-                                    <Text>{item.gender}</Text>
-                                    <Text>{item.email}</Text>
-                                    <Text>{item.dateOfBirth}</Text>
-                                </View>
-                            </View>
-                        );
+                        return <Student student={item} key={index}></Student>;
                     })}
                 </View>
             </ScrollView>
@@ -65,25 +60,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1
     },
+    scrollView: {
+        flexGrow: 1,
+        padding: 20
+    },
     txtHeader: {
         fontSize: 18,
         fontWeight: 'bold'
     },
-    item: {
-        paddingVertical: 15,
-        borderBottomColor: '#E2E2E2',
-        borderBottomWidth: 0.5,
-        flexDirection: 'row'
-    },
-    itemImageContainer: {
-        width: 100,
-        height: 100,
-        borderRadius: 100
-    },
-    itemImage: {
-        flex: 1,
-        width: undefined,
-        height: undefined
+    studentContainer: {
+        flex: 1
     }
 });
 

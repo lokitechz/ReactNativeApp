@@ -40,6 +40,58 @@
             "dateOfBirth": "17/09/1994",
             "createDate": "17/09/2023",
             "updateDate": "17/09/2023"
+        },{
+            "studentId": "PH10409",
+            "fullName": "Kiều Việt Thắng",
+            "email": "thangkvph10408@fpt.edu.vn",
+            "gender": "Male",
+            "dateOfBirth": "17/09/1994",
+            "createDate": "17/09/2023",
+            "updateDate": "17/09/2023"
+        },
+        {
+            "studentId": "PH13859",
+            "fullName": "Nguyễn Đức Dương",
+            "email": "duongndph13858@fpt.edu.vn",
+            "gender": "Male",
+            "dateOfBirth": "17/09/1994",
+            "createDate": "17/09/2023",
+            "updateDate": "17/09/2023"
+        },
+        {
+            "studentId": "PH28707",
+            "fullName": "Trần Thị Thu Phương",
+            "email": "phuongtttph28706@fpt.edu.vn",
+            "gender": "Female",
+            "dateOfBirth": "17/09/1994",
+            "createDate": "17/09/2023",
+            "updateDate": "17/09/2023"
+        },{
+            "studentId": "PH10410",
+            "fullName": "Kiều Việt Thắng",
+            "email": "thangkvph10408@fpt.edu.vn",
+            "gender": "Male",
+            "dateOfBirth": "17/09/1994",
+            "createDate": "17/09/2023",
+            "updateDate": "17/09/2023"
+        },
+        {
+            "studentId": "PH13860",
+            "fullName": "Nguyễn Đức Dương",
+            "email": "duongndph13858@fpt.edu.vn",
+            "gender": "Male",
+            "dateOfBirth": "17/09/1994",
+            "createDate": "17/09/2023",
+            "updateDate": "17/09/2023"
+        },
+        {
+            "studentId": "PH28708",
+            "fullName": "Trần Thị Thu Phương",
+            "email": "phuongtttph28706@fpt.edu.vn",
+            "gender": "Female",
+            "dateOfBirth": "17/09/1994",
+            "createDate": "17/09/2023",
+            "updateDate": "17/09/2023"
         }
     ]
 }
