@@ -1,17 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Button, View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import { SafeAreaView, Button, View, Text, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import log from '../Log';
 import Student from '../components/Student';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
+    const navigation = useNavigation();
     const [students, setStudents] = useState([]);
+    const [authInfo, setAuthInfo] = useState();
 
     // Hàm điều hướng
     const navigateToLogin = () => {
         navigation.navigate('Login');
     };
 
-    // Gọi function
+    // Funtion lấy data login từ AsyncStorage
+    const retrieveData = async () => {
+        try {
+            const authInfo = await AsyncStorage.getItem('authInfo');
+            if (authInfo !== null) {
+                log.info('====> authInfo from AsyncStorage', authInfo);
+                setAuthInfo(JSON.parse(authInfo));
+            }
+        } catch (error) {
+            log.error(error);
+        }
+    };
+
+    const doLogout = () => {
+        AsyncStorage.removeItem('authInfo');
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }]
+        });
+    };
+
+    // Funtion lấy danh sách sinh viên
     async function getListStudent() {
         try {
             const API_URL = 'http://localhost:3000/students';
@@ -24,7 +49,7 @@ const HomeScreen = ({ navigation }) => {
         }
     }
 
-    // Hooks là những hàm cho phép bạn “kết nối” React state và lifecycle vào các components sử dụng hàm.
+    // React Hooks là những hàm cho phép bạn “kết nối” React state và lifecycle vào các components sử dụng hàm.
     // useState() là 1 react hook
     // 6 trường hợp sử dụng của useEffect() trong React
     // 1.Chạy một lần khi mount : tìm nạp data API.
@@ -34,15 +59,14 @@ const HomeScreen = ({ navigation }) => {
     // 5.Chạy khi props thay đổi : update lại list đã fetched API khi data update.
     // 6.Chạy khi props thay đổi : updateing data API để cập nhật BTC
     useEffect(() => {
-        console.log('useEffect has been called!');
+        retrieveData();
         getListStudent();
     }, []);
 
-    // Gọi vào hàm return với dữ liệu ban đầu là là danh sách sinh viên rỗng
-    return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollView}>
-                <Button title='Go to Login Screen' onPress={navigateToLogin} />
+    // Funtion render danh sách sinh viên
+    const renderStudents = () => {
+        return (
+            <ScrollView contentContainerStyle={styles.scrollView}>
                 <View>
                     <Text style={styles.txtHeader}>List Student</Text>
                 </View>
@@ -52,6 +76,14 @@ const HomeScreen = ({ navigation }) => {
                     })}
                 </View>
             </ScrollView>
+        );
+    };
+
+    // Gọi vào hàm return với dữ liệu ban đầu là là danh sách sinh viên rỗng
+    return (
+        <SafeAreaView style={styles.container}>
+            {authInfo ? <Button title='Logout' onPress={doLogout} /> : <Button title='Go to Login Screen' onPress={navigateToLogin} />}
+            {authInfo?.role === 'ADMIN' ? renderStudents() : null}
         </SafeAreaView>
     );
 };

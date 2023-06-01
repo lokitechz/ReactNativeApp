@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
-import { Alert, Image, StyleSheet, View } from 'react-native';
+import { Text, Alert, Image, StyleSheet, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import log from '../Log';
 
-const SignInScreen = (props) => {
+const SignInScreen = () => {
+    const navigation = useNavigation();
     const [username, setUsername] = useState('');
+    const [usernameError, setUsernameError] = useState('');
     const [password, setPassword] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+
     // Tạo biến users để lưu trữ danh sách user của hệ thống
     let users = [];
+
+    // Hàm điều hướng màn hình
+    const navigateToHome = () => {
+        navigation.navigate('Home');
+    };
 
     // Function lấy dữ liệu từ API sử dụng fetch
     async function fetchData() {
@@ -18,83 +29,110 @@ const SignInScreen = (props) => {
             const response = await fetch(API_URL);
             // .json() chuyển đổi data trả về từ API sang json
             const data = await response.json();
-            return data;
+            users = data;
+            log.info('users: ' + JSON.stringify(users));
         } catch (error) {
             log.error('Fetch data failed ' + error);
             return null;
         }
     }
 
-    // Function gọi fetchData sau đó lưu response từ API trả về vào biến users
-    async function storeData() {
-        users = await fetchData();
-        log.info('users: ' + JSON.stringify(users));
-    }
+    fetchData();
 
-    storeData();
+    storeAuthInfo = async (value) => {
+        try {
+            const authInfo = JSON.stringify(value);
+            await AsyncStorage.setItem('authInfo', authInfo);
+        } catch (error) {
+            log.info(error);
+        }
+    };
+
+    const validateAuthInfo = (authInfo) => {
+        // Kiểm tra dữ liệu trên form gồm username và password
+        if (authInfo.userName === '') {
+            setUsernameError('Username field cannot be empty');
+            return false;
+        }
+
+        if (authInfo.password === '') {
+            setPasswordError('Password field cannot be empty');
+            return false;
+        }
+
+        return true;
+    };
+
+    const clearError = () => {
+        setUsernameError('');
+        setPasswordError('');
+    };
 
     // Funtion thực hiện đăng nhập
     const doLogin = () => {
-        // Kiểm tra dữ liệu trên form gồm username và password
-        if (username.length == 0) {
-            Alert.alert('Username is required');
-            return;
-        }
-
-        if (password.length == 0) {
-            Alert.alert('Password is required');
-            return;
-        }
-
         // Tạo đối tượng lưu giữ thông tin login
-        let request = { username: username, password: password };
-
+        let request = { userName: username, password: password };
         // In ra thông tin user phục vụ check lỗi
         log.info('authInfo: ' + JSON.stringify(request));
-
         // Kiêm tra danh sách users có null hoặc undefined không
         if (users) {
-            const authInfo = users.find((user) => user.userName === request.username);
-            // Thực hiện validate dữ liệu trên form và hiển thị alert
-            if (!authInfo) {
-                Alert.alert('Notification', 'Cant find user infomation', [{ text: 'Cancel', onPress: () => log.error('Cant find user ' + request.username) }]);
-            } else {
-                if (!(authInfo.password === request.password)) {
-                    Alert.alert('Notification', 'Password is not correct', [{ text: 'Cancel', onPress: () => log.error('Password is not correct for ' + request.username) }]);
+            // Validate dữ liệu nhập vào
+            const validateResult = validateAuthInfo(request);
+            if (validateResult === true) {
+                // Tìm user trong danh sách user từ API trả về
+                const authInfo = users.find((user) => request.userName === user.userName);
+                // Thực hiện validate dữ liệu trên form và hiển thị alert
+                if (!authInfo) {
+                    Alert.alert('Notification', 'Cant find user infomation', [{ text: 'Cancel', onPress: () => log.error('Cant find user ' + request.userName) }]);
+                    clearError();
                 } else {
-                    Alert.alert('Notification', 'Login successfull ' + request.username, [
-                        { text: 'OK', onPress: () => navigateToHome() },
-                        { text: 'Cancel', onPress: () => log.info('Press Cancel') }
-                    ]);
+                    if (!(authInfo.password === request.password)) {
+                        setPasswordError('Password is not correct');
+                        return;
+                    } else {
+                        clearError();
+                        storeAuthInfo(authInfo);
+                        Alert.alert('Notification', 'Login successfull ' + request.userName, [
+                            { text: 'OK', onPress: () => navigateToHome() },
+                            { text: 'Cancel', onPress: () => log.info('Press Cancel') }
+                        ]);
+                    }
                 }
             }
         }
     };
 
-    const navigateToHome = () => {
-        props.navigation.navigate('Home');
-    };
-
     return (
         <View style={styles.root}>
-            <Image source={require('../assets/logo.png')} style={styles.logo} />
+            <View style={styles.cotainer}>
+                <Image source={require('../assets/logo.png')} style={styles.logo} />
+            </View>
             <CustomInput placeholder='Username' value={username} setValue={setUsername} secureTextEntry={false} />
+            <Text style={styles.errorTxt}>{usernameError}</Text>
             <CustomInput placeholder='Password' value={password} setValue={setPassword} secureTextEntry={true} />
+            <Text style={styles.errorTxt}>{passwordError}</Text>
             <CustomButton btnLabel={'Sign In'} onPress={doLogin} />
-            <CustomButton btnLabel={'Back to Home'} onPress={navigateToHome} />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     root: {
-        alignItems: 'center',
         padding: 20
+    },
+    cotainer: {
+        marginTop: 100,
+        alignItems: 'center'
     },
     logo: {
         width: '50%',
         height: '50%',
-        resizeMode: 'contain'
+        resizeMode: 'contain',
+        alignItems: 'center'
+    },
+    errorTxt: {
+        color: 'red',
+        marginVertical: 5
     }
 });
 

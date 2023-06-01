@@ -9,6 +9,20 @@
             "lastName": "Dương",
             "email": "giangdh20@fpt.edu.vn",
             "gender": "Male",
+            "role": "ADMIN",
+            "createDate": "17/09/2023",
+            "updateDate": "17/09/2023"
+        },
+        {
+            "id": 2,
+            "userName": "giangdh21",
+            "password": "12345",
+            "firtName": "Giang",
+            "middleName": "Hoàng",
+            "lastName": "Dương",
+            "email": "giangdh20@fpt.edu.vn",
+            "gender": "Male",
+            "role": "STAFF",
             "createDate": "17/09/2023",
             "updateDate": "17/09/2023"
         }
