@@ -28,6 +28,7 @@ const HomeScreen = () => {
         }
     };
 
+    // Funtion logout
     const doLogout = () => {
         AsyncStorage.removeItem('authInfo');
         navigation.reset({
@@ -37,17 +38,17 @@ const HomeScreen = () => {
     };
 
     // Funtion lấy danh sách sinh viên
-    async function getListStudent() {
+    const getListStudent = async () => {
         try {
             const API_URL = 'http://localhost:3000/students';
             const response = await fetch(API_URL);
             const data = await response.json();
-            setStudents(data);
             log.info('====> students:', JSON.stringify(data));
+            setStudents(data);
         } catch (error) {
             log.error('Fetch data failed ' + error);
         }
-    }
+    };
 
     // React Hooks là những hàm cho phép bạn “kết nối” React state và lifecycle vào các components sử dụng hàm.
     // useState() là 1 react hook
