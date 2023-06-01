@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, Alert, Image, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,13 +8,12 @@ import log from '../Log';
 
 const SignInScreen = () => {
     const navigation = useNavigation();
+    // Khai báo các thông tin input
+    const [users, setUsers] = useState([]);
     const [username, setUsername] = useState('');
     const [usernameError, setUsernameError] = useState('');
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
-
-    // Tạo biến users để lưu trữ danh sách user của hệ thống
-    let users = [];
 
     // Hàm điều hướng màn hình
     const navigateToHome = () => {
@@ -22,50 +21,49 @@ const SignInScreen = () => {
     };
 
     // Function lấy dữ liệu từ API sử dụng fetch
-    async function fetchData() {
+    const fetchData = async () => {
         try {
             // Khai báo đường dẫn API
             const API_URL = 'http://localhost:3000/users';
             const response = await fetch(API_URL);
-            // .json() chuyển đổi data trả về từ API sang json
             const data = await response.json();
-            users = data;
-            log.info('users: ' + JSON.stringify(users));
+            setUsers(data);
         } catch (error) {
             log.error('Fetch data failed ' + error);
             return null;
         }
-    }
+    };
 
-    fetchData();
+    // Funtion validate dữ liệu
+    const validateAuthInfo = (authInfo) => {
+        // Kiểm tra dữ liệu trên form gồm username và password
+        if (authInfo.userName === '') {
+            setUsernameError('Username field cannot be empty');
+            return false;
+        } else if (authInfo.password === '') {
+            setUsernameError('');
+            setPasswordError('Password field cannot be empty');
+            return false;
+        }
+        return true;
+    };
 
-    storeAuthInfo = async (value) => {
+    // Funtion clear message lỗi
+    const clearError = (usernameError, passwordError) => {
+        if (usernameError) setUsernameError('');
+        if (passwordError) setPasswordError('');
+    };
+
+    // Funtion lưu thông tin authentication vào AsyncStorage
+    // AsyncStorage chỉ đơn giản là lưu dữ liệu vào tài liệu trên ổ cứng của điện thoại
+    // do đó bất kỳ ai có quyền truy cập vào hệ thống tệp của điện thoại đều có thể đọc dữ liệu đó.
+    const storeAuthInfo = async (value) => {
         try {
             const authInfo = JSON.stringify(value);
             await AsyncStorage.setItem('authInfo', authInfo);
         } catch (error) {
             log.info(error);
         }
-    };
-
-    const validateAuthInfo = (authInfo) => {
-        // Kiểm tra dữ liệu trên form gồm username và password
-        if (authInfo.userName === '') {
-            setUsernameError('Username field cannot be empty');
-            return false;
-        }
-
-        if (authInfo.password === '') {
-            setPasswordError('Password field cannot be empty');
-            return false;
-        }
-
-        return true;
-    };
-
-    const clearError = () => {
-        setUsernameError('');
-        setPasswordError('');
     };
 
     // Funtion thực hiện đăng nhập
@@ -81,16 +79,17 @@ const SignInScreen = () => {
             if (validateResult === true) {
                 // Tìm user trong danh sách user từ API trả về
                 const authInfo = users.find((user) => request.userName === user.userName);
-                // Thực hiện validate dữ liệu trên form và hiển thị alert
+                // Thực hiện validate thông tin đăng nhâp
                 if (!authInfo) {
+                    clearError(usernameError, passwordError);
                     Alert.alert('Notification', 'Cant find user infomation', [{ text: 'Cancel', onPress: () => log.error('Cant find user ' + request.userName) }]);
-                    clearError();
                 } else {
                     if (!(authInfo.password === request.password)) {
+                        clearError(usernameError, passwordError);
                         setPasswordError('Password is not correct');
                         return;
                     } else {
-                        clearError();
+                        clearError(usernameError, passwordError);
                         storeAuthInfo(authInfo);
                         Alert.alert('Notification', 'Login successfull ' + request.userName, [
                             { text: 'OK', onPress: () => navigateToHome() },
@@ -101,6 +100,11 @@ const SignInScreen = () => {
             }
         }
     };
+
+    // Initialize
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     return (
         <View style={styles.root}>
@@ -118,10 +122,10 @@ const SignInScreen = () => {
 
 const styles = StyleSheet.create({
     root: {
-        padding: 20
+        paddingHorizontal: 20
     },
     cotainer: {
-        marginTop: 100,
+        marginTop: 60,
         alignItems: 'center'
     },
     logo: {

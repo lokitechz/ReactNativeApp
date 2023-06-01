@@ -9,7 +9,7 @@ const App = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName='Login'>
-                <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false, gestureEnabled: false }} />
+                <Stack.Screen name='Login' component={LoginScreen} options={{ gestureEnabled: false }} />
                 <Stack.Screen name='Home' component={HomeScreen} options={{ gestureEnabled: false }} />
             </Stack.Navigator>
         </NavigationContainer>
