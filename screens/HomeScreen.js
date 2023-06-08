@@ -9,7 +9,7 @@ const HomeScreen = () => {
     const [students, setStudents] = useState([]);
     const [authInfo, setAuthInfo] = useState();
 
-    // Funtion lấy data login từ AsyncStorage
+    // Lấy data login từ AsyncStorage
     const retrieveData = async () => {
         try {
             const authInfo = await AsyncStorage.getItem('authInfo');
@@ -22,7 +22,7 @@ const HomeScreen = () => {
         }
     };
 
-    // Funtion lấy danh sách sinh viên
+    // Lấy danh sách sinh viên
     const getListStudent = async () => {
         try {
             const API_URL = 'http://localhost:3000/students';
@@ -35,13 +35,15 @@ const HomeScreen = () => {
         }
     };
 
-    // Hàm xoá dữ liệu
+    // Xoá dữ liệu
     const deleteStudent = async (item) => {
         try {
             let studentId = item.id;
             const API_URL = 'http://localhost:3000/students/' + studentId;
-            await fetch(API_URL, { method: 'DELETE' });
-            getListStudent();
+            const response = await fetch(API_URL, { method: 'DELETE' });
+            if (response && response.status === 200) {
+                getListStudent();
+            }
         } catch (error) {
             log.error('Delete data failed ' + error);
         }
@@ -61,7 +63,7 @@ const HomeScreen = () => {
         getListStudent();
     }, []);
 
-    // Funtion render danh sách sinh viên
+    // Danh sách sinh viên (Role ADMIN)
     const renderStudents = () => {
         return (
             <ScrollView contentContainerStyle={styles.scrollView}>
@@ -77,12 +79,10 @@ const HomeScreen = () => {
         );
     };
 
+    // Màn hình cập nhật thông tin (Role Student)
+
     // Gọi vào hàm return với dữ liệu ban đầu là là danh sách sinh viên rỗng
-    return (
-        <SafeAreaView style={styles.container}>
-            {authInfo?.role === 'ADMIN' ? renderStudents() : null}
-        </SafeAreaView>
-    );
+    return <SafeAreaView style={styles.container}>{authInfo?.role === 'ADMIN' ? renderStudents() : null}</SafeAreaView>;
 };
 
 const styles = StyleSheet.create({

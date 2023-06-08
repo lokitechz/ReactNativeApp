@@ -1,8 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, Button } from 'react-native';
+import { StyleSheet, View, Text, Image } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import log from '../Log';
 
 const Student = ({ student, onDelete }) => {
     return (
@@ -22,7 +21,7 @@ const Student = ({ student, onDelete }) => {
                 <Text>{student.dateOfBirth}</Text>
             </View>
             <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(student)}>
-                <FontAwesome5 name='trash-alt' size={25} color='black' />
+                <FontAwesome5 name='trash-alt' size={25} color='red' />
             </TouchableOpacity>
         </View>
     );
