@@ -125,14 +125,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     cotainer: {
-        marginTop: 60,
+        marginVertical: 60,
         alignItems: 'center'
     },
     logo: {
-        width: '50%',
-        height: '50%',
-        resizeMode: 'contain',
-        alignItems: 'center'
+        width: 180,
+        height: 180,
+        resizeMode: 'cover',
     },
     errorTxt: {
         color: 'red',

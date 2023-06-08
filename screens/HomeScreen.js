@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Button, View, Text, StyleSheet, ScrollView } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import log from '../Log';
 import Student from '../components/Student';
 
 const HomeScreen = () => {
-    const navigation = useNavigation();
     const [students, setStudents] = useState([]);
     const [authInfo, setAuthInfo] = useState();
-
-    // Hàm điều hướng
-    const navigateToLogin = () => {
-        navigation.navigate('Login');
-    };
 
     // Funtion lấy data login từ AsyncStorage
     const retrieveData = async () => {
@@ -28,15 +22,6 @@ const HomeScreen = () => {
         }
     };
 
-    // Funtion logout
-    const doLogout = () => {
-        AsyncStorage.removeItem('authInfo');
-        navigation.reset({
-            index: 0,
-            routes: [{ name: 'Login' }]
-        });
-    };
-
     // Funtion lấy danh sách sinh viên
     const getListStudent = async () => {
         try {
@@ -47,6 +32,18 @@ const HomeScreen = () => {
             setStudents(data);
         } catch (error) {
             log.error('Fetch data failed ' + error);
+        }
+    };
+
+    // Hàm xoá dữ liệu
+    const deleteStudent = async (item) => {
+        try {
+            let studentId = item.id;
+            const API_URL = 'http://localhost:3000/students/' + studentId;
+            await fetch(API_URL, { method: 'DELETE' });
+            getListStudent();
+        } catch (error) {
+            log.error('Delete data failed ' + error);
         }
     };
 
@@ -73,7 +70,7 @@ const HomeScreen = () => {
                 </View>
                 <View style={styles.studentContainer}>
                     {students.map((item, index) => {
-                        return <Student student={item} key={index}></Student>;
+                        return <Student student={item} key={index} onDelete={deleteStudent}></Student>;
                     })}
                 </View>
             </ScrollView>
@@ -83,7 +80,6 @@ const HomeScreen = () => {
     // Gọi vào hàm return với dữ liệu ban đầu là là danh sách sinh viên rỗng
     return (
         <SafeAreaView style={styles.container}>
-            {authInfo ? <Button title='Logout' onPress={doLogout} /> : <Button title='Go to Login Screen' onPress={navigateToLogin} />}
             {authInfo?.role === 'ADMIN' ? renderStudents() : null}
         </SafeAreaView>
     );

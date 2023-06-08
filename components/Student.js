@@ -1,7 +1,10 @@
-import { StyleSheet, View, Text, Image } from 'react-native';
 import React from 'react';
+import { StyleSheet, View, Text, Image, Button } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import log from '../Log';
 
-const Student = ({ student }) => {
+const Student = ({ student, onDelete }) => {
     return (
         <View style={styles.item}>
             <View style={styles.itemImageContainer}>
@@ -11,23 +14,27 @@ const Student = ({ student }) => {
                     <Image style={styles.itemImage} source={require('../assets/images/female.png')} resizeMode='contain' />
                 )}
             </View>
-            <View style={styles.right}>
-                <Text>{student.studentId}</Text>
+            <View>
+                <Text>{student.id}</Text>
                 <Text>{student.fullName}</Text>
                 <Text>{student.gender}</Text>
                 <Text>{student.email}</Text>
                 <Text>{student.dateOfBirth}</Text>
             </View>
+            <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(student)}>
+                <FontAwesome5 name='trash-alt' size={25} color='black' />
+            </TouchableOpacity>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     item: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         paddingVertical: 15,
         borderBottomColor: '#E2E2E2',
-        borderBottomWidth: 0.5,
-        flexDirection: 'row'
+        borderBottomWidth: 0.5
     },
     itemImageContainer: {
         width: 100,
@@ -39,8 +46,10 @@ const styles = StyleSheet.create({
         width: undefined,
         height: undefined
     },
-    right: {
-        paddingLeft: 15
+    deleteButton: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center'
     }
 });
 

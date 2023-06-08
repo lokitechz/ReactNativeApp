@@ -29,7 +29,7 @@
     ],
     "students":[
         {
-            "studentId": "PH10408",
+            "id": "PH10408",
             "fullName": "Kiều Việt Thắng",
             "email": "thangkvph10408@fpt.edu.vn",
             "gender": "Male",
@@ -38,7 +38,7 @@
             "updateDate": "17/09/2023"
         },
         {
-            "studentId": "PH13858",
+            "id": "PH13858",
             "fullName": "Nguyễn Đức Dương",
             "email": "duongndph13858@fpt.edu.vn",
             "gender": "Male",
@@ -47,7 +47,7 @@
             "updateDate": "17/09/2023"
         },
         {
-            "studentId": "PH28706",
+            "id": "PH28706",
             "fullName": "Trần Thị Thu Phương",
             "email": "phuongtttph28706@fpt.edu.vn",
             "gender": "Female",
@@ -55,7 +55,7 @@
             "createDate": "17/09/2023",
             "updateDate": "17/09/2023"
         },{
-            "studentId": "PH10409",
+            "id": "PH10409",
             "fullName": "Kiều Việt Thắng",
             "email": "thangkvph10408@fpt.edu.vn",
             "gender": "Male",
@@ -64,7 +64,7 @@
             "updateDate": "17/09/2023"
         },
         {
-            "studentId": "PH13859",
+            "id": "PH13859",
             "fullName": "Nguyễn Đức Dương",
             "email": "duongndph13858@fpt.edu.vn",
             "gender": "Male",
@@ -73,7 +73,7 @@
             "updateDate": "17/09/2023"
         },
         {
-            "studentId": "PH28707",
+            "id": "PH28707",
             "fullName": "Trần Thị Thu Phương",
             "email": "phuongtttph28706@fpt.edu.vn",
             "gender": "Female",
@@ -81,7 +81,7 @@
             "createDate": "17/09/2023",
             "updateDate": "17/09/2023"
         },{
-            "studentId": "PH10410",
+            "id": "PH10410",
             "fullName": "Kiều Việt Thắng",
             "email": "thangkvph10408@fpt.edu.vn",
             "gender": "Male",
@@ -90,7 +90,7 @@
             "updateDate": "17/09/2023"
         },
         {
-            "studentId": "PH13860",
+            "id": "PH13860",
             "fullName": "Nguyễn Đức Dương",
             "email": "duongndph13858@fpt.edu.vn",
             "gender": "Male",
@@ -99,7 +99,7 @@
             "updateDate": "17/09/2023"
         },
         {
-            "studentId": "PH28708",
+            "id": "PH28708",
             "fullName": "Trần Thị Thu Phương",
             "email": "phuongtttph28706@fpt.edu.vn",
             "gender": "Female",
