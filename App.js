@@ -9,7 +9,6 @@ import LoginScreen from './screens/SignInScreen';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-
     // Funtion logout
     const doLogout = (navigation) => {
         AsyncStorage.removeItem('authInfo');
@@ -28,7 +27,7 @@ const App = () => {
                     component={HomeScreen}
                     options={(props) => ({
                         gestureEnabled: false,
-                        headerRight: () => <Button onPress={() => doLogout(props.navigation)} title='Logout' />
+                        headerRight: () => <Button title='Logout' onPress={() => doLogout(props.navigation)} />
                     })}
                 />
             </Stack.Navigator>
