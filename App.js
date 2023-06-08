@@ -27,6 +27,7 @@ const App = () => {
                     component={HomeScreen}
                     options={(props) => ({
                         gestureEnabled: false,
+                        headerBackVisible: false,
                         headerRight: () => <Button title='Logout' onPress={() => doLogout(props.navigation)} />
                     })}
                 />

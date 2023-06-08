@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, View, Text, StyleSheet, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import log from '../Log';
 import Student from '../components/Student';
+import CustomInput from '../components/CustomInput';
+import CustomButton from '../components/CustomButton';
+import { CheckBox } from 'react-native-elements';
 
 const HomeScreen = () => {
-    const [students, setStudents] = useState([]);
     const [authInfo, setAuthInfo] = useState();
+    const [students, setStudents] = useState([]);
+    const [selectedIndex, setIndex] = useState(0);
 
     // Lấy data login từ AsyncStorage
-    const retrieveData = async () => {
+    const getAuthInfo = async () => {
         try {
             const authInfo = await AsyncStorage.getItem('authInfo');
             if (authInfo !== null) {
@@ -38,7 +41,7 @@ const HomeScreen = () => {
     // Xoá dữ liệu
     const deleteStudent = async (item) => {
         try {
-            let studentId = item.id;
+            const studentId = item.id;
             const API_URL = 'http://localhost:3000/students/' + studentId;
             const response = await fetch(API_URL, { method: 'DELETE' });
             if (response && response.status === 200) {
@@ -59,7 +62,7 @@ const HomeScreen = () => {
     // 5.Chạy khi props thay đổi : update lại list đã fetched API khi data update.
     // 6.Chạy khi props thay đổi : updateing data API để cập nhật BTC
     useEffect(() => {
-        retrieveData();
+        getAuthInfo();
         getListStudent();
     }, []);
 
@@ -80,9 +83,27 @@ const HomeScreen = () => {
     };
 
     // Màn hình cập nhật thông tin (Role Student)
+    const rennderForm = () => {
+        return (
+            <SafeAreaView style={styles.formCotainer}>
+                <Text style={styles.formHeader}>Student Infomation</Text>
+                <CustomInput placeholder='Fullname' value={''} setValue={''} secureTextEntry={false} />
+                <CustomInput placeholder='Email' value={''} setValue={''} secureTextEntry={false} />
+                <View style={{ flexDirection: 'row' }}>
+                    <CheckBox title='Male' checked={selectedIndex === 0} onPress={() => setIndex(0)} checkedIcon='dot-circle-o' uncheckedIcon='circle-o' />
+                    <CheckBox title='Female' checked={selectedIndex === 1} onPress={() => setIndex(1)} checkedIcon='dot-circle-o' uncheckedIcon='circle-o' />
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Role: </Text>
+                    <Text>{authInfo?.role}</Text>
+                </View>
+                <CustomButton btnLabel={'Save'} />
+            </SafeAreaView>
+        );
+    };
 
     // Gọi vào hàm return với dữ liệu ban đầu là là danh sách sinh viên rỗng
-    return <SafeAreaView style={styles.container}>{authInfo?.role === 'ADMIN' ? renderStudents() : null}</SafeAreaView>;
+    return <SafeAreaView style={styles.container}>{authInfo?.role === 'ADMIN' ? renderStudents() : rennderForm()}</SafeAreaView>;
 };
 
 const styles = StyleSheet.create({
@@ -99,6 +120,15 @@ const styles = StyleSheet.create({
     },
     studentContainer: {
         flex: 1
+    },
+    formCotainer: {
+        alignItems: 'center',
+        paddingHorizontal: 20
+    },
+    formHeader: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        paddingVertical: 20
     }
 });
 
